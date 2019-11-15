@@ -38,8 +38,6 @@
     //开启定位
     [self.locationManager startUpdatingLocation];
     [self.locationManager startUpdatingHeading];
-    
-    //我是分支你知道吗
       
 }
 #pragma mark - BMKLocationManagerDelegate
