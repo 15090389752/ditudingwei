@@ -7,17 +7,46 @@
 //
 
 #import "AppDelegate.h"
-
-@interface AppDelegate ()
-
+#import "ViewController.h"
+#import <BaiduMapAPI_Base/BMKBaseComponent.h>//引入base相关所有的头文件
+#import <BMKLocationkit/BMKLocationComponent.h>
+@interface AppDelegate ()<BMKLocationAuthDelegate, BMKLocationManagerDelegate>
+@property (nonatomic, strong)CLLocationManager *manager;
 @end
 
 @implementation AppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    // 要使用百度地图，请先启动BaiduMapManager
+       BMKMapManager *mapManager = [[BMKMapManager alloc] init];
+       // 如果要关注网络及授权验证事件，请设定generalDelegate参数
+       BOOL ret = [mapManager start:@"b6yd78KjtrVTQsrXriRntDq0BV9p15Dr"  generalDelegate:nil];
+       if (!ret) {
+           NSLog(@"manager start failed!");
+       }
+  //设置定位AK
+    _manager = [CLLocationManager new];
+    [_manager requestAlwaysAuthorization];
+    [[BMKLocationAuth sharedInstance] checkPermisionWithKey:@"b6yd78KjtrVTQsrXriRntDq0BV9p15Dr" authDelegate:self];
+   
+    if (@available(iOS 13, *)) {
+        
+    } else {
+        self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
+        self.window.rootViewController = [[ViewController alloc]init];
+        [self.window makeKeyAndVisible];
+    }
+    
     return YES;
+}
+
+- (void)onCheckPermissionState:(BMKLocationAuthErrorCode)iError{
+    if (iError) {
+        NSLog(@"定位授权失败");
+    }else{
+        NSLog(@"定位授权成功");
+    }
 }
 
 
